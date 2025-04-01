@@ -10,6 +10,9 @@ public class GameValue {
 
     //坦克的数据
     public static int hero_weight= 10;
+    public static int hero_speed = 1;
+    public static int TANKE_weight= 60;
+    public static int TANKE_height= 60;
     public static int hero_height= 60;
     public static Color HERO_BALL_COLOR = Color.red;
     public static int HERO_BALL_XY= 3;

@@ -8,8 +8,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Vector;
 
-public class Mypanel extends JPanel  implements KeyListener {
+public class Mypanel extends JPanel  implements KeyListener, Runnable {
 
     private Hero hero = null;
     public Mypanel(){
@@ -25,7 +26,7 @@ public class Mypanel extends JPanel  implements KeyListener {
         tangPaint(g,hero, hero.direction,true);
 
         //画子弹
-        drawBall(g, hero.shot, true);
+        drawBall(g, hero.shots, true);
     }
 
     /***
@@ -85,13 +86,19 @@ public class Mypanel extends JPanel  implements KeyListener {
     /**
      *
      * @param g 画笔
-     * @param bullet 获取子弹位置
+     * @param bullets 获取子弹s位置
      * @param flag 敌 true 还是我
      */
-    public void drawBall(Graphics g, Shot bullet, boolean flag){
-        if(bullet == null) return;
+    public void drawBall(Graphics g, Vector<Shot> bullets, boolean flag){
+
+
         g.setColor(GameValue.HERO_BALL_COLOR);
-        g.fillOval(bullet.getX(), bullet.getY(), GameValue.HERO_BALL_XY, GameValue.HERO_BALL_XY);
+       for(int i = 0; i < bullets.size(); i++){
+
+           Shot shot = bullets.get(i);
+           if( !shot.isLive()) bullets.remove(shot);
+           g.fillOval(shot.getX(), shot.getY(), GameValue.HERO_BALL_XY, GameValue.HERO_BALL_XY);
+       }
     }
 
     @Override
@@ -103,28 +110,30 @@ public class Mypanel extends JPanel  implements KeyListener {
     //判断键盘是否按下
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println("按下键盘" + e.getKeyCode());
-
         switch (e.getKeyCode()){
             case KeyEvent.VK_W:
-                hero.setY0(hero.getY0() - 1);
+                if(hero.isPass(hero.speed)) return;
+                hero.setY0(hero.getY0() - hero.speed);
                 hero.direction = KeyEvent.VK_W;
                 break;
             case KeyEvent.VK_S:
-                hero.setY0(hero.getY0() + 1);
                 hero.direction = KeyEvent.VK_S;
+                if(hero.isPass(hero.speed)) return;
+                hero.setY0(hero.getY0() + hero.speed);
                 break;
             case KeyEvent.VK_D:
-                hero.setX0(hero.getX0() + 1);
                 hero.direction = KeyEvent.VK_D;
+                if(hero.isPass(hero.speed)) return;
+                hero.setX0(hero.getX0() + hero.speed);
                 break;
             case KeyEvent.VK_A:
-                hero.setX0(hero.getX0() - 1);
                 hero.direction = KeyEvent.VK_A;
+                if(hero.isPass(hero.speed)) return;
+                hero.setX0(hero.getX0() - hero.speed);
                 break;
-            case KeyEvent.VK_J:
+            case KeyEvent.VK_Q:
                 System.out.println("按下开炮");
-                hero.shotTanke(this);
+                hero.shotTanke();
                 break;
         }
         this.repaint();
@@ -134,5 +143,17 @@ public class Mypanel extends JPanel  implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
 
+    }
+
+    @Override
+    public void run() {
+        while(true){
+            try{
+                this.repaint();
+                Thread.sleep(200);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 }

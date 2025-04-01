@@ -1,5 +1,7 @@
 package code;
 
+import Util.GameValue;
+
 import java.awt.event.KeyEvent;
 
 public class Tanke {
@@ -31,8 +33,42 @@ public class Tanke {
         this.direction = direction;
     }
 
+    //判断坦克是否出边界
+    public boolean isPass(int speed){
+        boolean flag = true; // 默认出边界
+        int newX = getX0(),nexY = getY0();
+        int newX0 = getX0(),nexY0 = getY0();
+        switch (getDirection()){
+            case KeyEvent.VK_W:
+                nexY -=  speed;
+                nexY0 = nexY+ GameValue.TANKE_height;
+                newX0 += GameValue.TANKE_weight;
+                break;
+            case KeyEvent.VK_S:
+                nexY += speed;
+                newX0 += GameValue.TANKE_weight;
+                nexY0 = nexY+  GameValue.TANKE_height;
+                break;
+            case KeyEvent.VK_D:
+                newX += speed;
+                newX0 = newX +  GameValue.TANKE_height;
+                nexY0 += GameValue.TANKE_weight;
+                break;
+            case KeyEvent.VK_A:
+                newX -= speed;
+                newX0 = newX +  GameValue.TANKE_height;
+                nexY0 += GameValue.TANKE_weight;
+                break;
+        }
+        if((newX >= 0 && newX0 <= GameValue.Panel_weight) && (nexY >= 0 && nexY0 <= GameValue.Panel_height)){
+            flag = false;
+        }
+        return flag;
+    }
+
     //方向
     public int direction = KeyEvent.VK_W;
     public int y0= 0;
     public int x0= 0;
+    public int speed= 1;
 }

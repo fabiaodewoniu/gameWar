@@ -24,25 +24,41 @@ public class Shot implements  Runnable{
         this.y = y;
     }
 
-    public void setMypanel(Mypanel mypanel) {
-        this.mypanel = mypanel;
-    }
-
-    Mypanel mypanel = null;
     int y = 0;
     int direction = 0;
-    public Shot(int direction, int x, int y) {
-        this.direction = direction;
-        this.y = y;
-        this.x = x;
+    public Shot(Tanke tanke) {
+        this.direction = tanke.getDirection();
+        switch (direction){//判断子弹方向
+            case KeyEvent.VK_W:
+                this.y = tanke.getY0();
+                this.x = tanke.getX0() + 20;
+                break;
+            case KeyEvent.VK_S:
+                this.y = tanke.getY0() + 60;
+                this.x = tanke.getX0() + 20;
+                break;
+            case KeyEvent.VK_D:
+                this.y = tanke.getY0() + 20;
+                this.x = tanke.getX0() + 60;
+                break;
+            case KeyEvent.VK_A:
+                this.y = tanke.getY0() + 20;
+                this.x = tanke.getX0();
+                break;
+        }
     }
 
     //速度
     int speed = 2;
-    boolean flag = true;
+
+    public boolean isLive() {
+        return isLive;
+    }
+
+    boolean isLive = true;
     @Override
     public void run() {
-            while(true){
+            while(isLive){
                 switch (direction){//判断子弹方向
                     case KeyEvent.VK_W:
                         y -= speed;
@@ -64,17 +80,16 @@ public class Shot implements  Runnable{
                 }
                 System.out.println(" 子弹坐标x:"+x +" y:"+ y);
                 if(isOver()){//判断是否结束
-                    flag = false;
+                    isLive = false;
                     System.out.println(" 子弹结束！");
                     return;
                 }
-                mypanel.repaint();
             }
     }
 
     //判断子弹是否结束
     public boolean isOver(){
-        if( x < 0 || x > GameValue.Panel_weight || y<0 || y > GameValue.Panel_height ){
+        if( x <= 0 || x >= GameValue.Panel_weight || y<= 0 || y >= GameValue.Panel_height ){
             return true;
         }
         return false;
