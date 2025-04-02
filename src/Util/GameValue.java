@@ -22,5 +22,5 @@ public class GameValue {
     public static Color ENEMY_BALL_COLOR = Color.green;
     public static Color ENEMY_COLOR = Color.yellow;
     public static int ENEMY_SIZE = 3;
-
+    public static int ENEMY_SIZ3E = 3;
 }
