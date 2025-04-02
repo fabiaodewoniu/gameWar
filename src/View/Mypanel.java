@@ -8,8 +8,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Vector;
 
-public class Mypanel extends JPanel  implements KeyListener {
+public class Mypanel extends JPanel  implements KeyListener , Runnable{
 
     private Hero hero = null;
     public Mypanel(){
@@ -25,7 +26,7 @@ public class Mypanel extends JPanel  implements KeyListener {
         tangPaint(g,hero, hero.direction,true);
 
         //画子弹
-        drawBall(g, hero.shot, true);
+        drawBall(g, hero.bullets, true);
     }
 
     /***
@@ -85,20 +86,27 @@ public class Mypanel extends JPanel  implements KeyListener {
     /**
      *
      * @param g 画笔
-     * @param bullet 获取子弹位置
+     * @param bullets 获取子弹列
      * @param flag 敌 true 还是我
      */
-    public void drawBall(Graphics g, Shot bullet, boolean flag){
-        if(bullet == null) return;
-        g.setColor(GameValue.HERO_BALL_COLOR);
-        g.fillOval(bullet.getX(), bullet.getY(), GameValue.HERO_BALL_XY, GameValue.HERO_BALL_XY);
+    public void drawBall(Graphics g, Vector<Shot> bullets, boolean flag){
+        for(int i = 0; i< bullets.size(); i++){
+            Shot shot = bullets.get(i);
+            if(shot.isLive){
+                g.setColor(GameValue.HERO_BALL_COLOR);
+                g.fillOval(shot.getX(), shot.getY(), GameValue.HERO_BALL_XY, GameValue.HERO_BALL_XY);
+            }else{
+                bullets.remove(i);
+            }
+        }
+
+
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
 
     }
-
 
     //判断键盘是否按下
     @Override
@@ -124,7 +132,7 @@ public class Mypanel extends JPanel  implements KeyListener {
                 break;
             case KeyEvent.VK_J:
                 System.out.println("按下开炮");
-                hero.shotTanke(this);
+                hero.shotTanke();
                 break;
         }
         this.repaint();
@@ -134,5 +142,17 @@ public class Mypanel extends JPanel  implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
 
+    }
+
+    @Override
+    public void run() {
+        while(true){
+            try{
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            this.repaint();
+        }
     }
 }
