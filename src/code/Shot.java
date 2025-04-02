@@ -9,23 +9,28 @@ public class Shot implements  Runnable{
     public int getX() {
         return x;
     }
-
     public void setX(int x) {
         this.x = x;
     }
-
-    int x = 0;
-
     public int getY() {
         return y;
     }
-
     public void setY(int y) {
         this.y = y;
     }
+    int x = 0;
     int y = 0;
     int direction = 0;
-    int speed = 2;//速度
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    private int speed = 2;//速度
     public boolean isLive = true;
     public Shot(Tanke tanke) {
         this.direction = tanke.getDirection();
@@ -52,7 +57,7 @@ public class Shot implements  Runnable{
 
     @Override
     public void run() {
-            while(true){
+            while(isLive){
                 switch (direction){//判断子弹方向
                     case KeyEvent.VK_W:
                         y -= speed;
@@ -72,7 +77,7 @@ public class Shot implements  Runnable{
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-//                System.out.println(" 子弹坐标x:"+x +" y:"+ y);
+                System.out.println(" 子弹坐标x:"+x +" y:"+ y);
                 if(isOver()){//判断是否结束
                     isLive = false;
                     System.out.println(" 子弹结束！");
