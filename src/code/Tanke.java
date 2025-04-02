@@ -1,5 +1,7 @@
 package code;
 
+import Util.GameValue;
+
 import java.awt.event.KeyEvent;
 
 public class Tanke {
@@ -31,8 +33,19 @@ public class Tanke {
         this.direction = direction;
     }
 
+    public boolean getLive() {
+        return isLive;
+    }
+
+    public void setLive(boolean live) {
+        isLive = live;
+    }
+
+    //
+    private boolean isLive =true;
     //方向
-    public int direction = KeyEvent.VK_W;
-    public int y0= 0;
-    public int x0= 0;
+    private int direction = KeyEvent.VK_W;
+    private int y0= 0;
+    private int x0= 0;
+    public  int speed = GameValue.HERO_SPEED;
 }
