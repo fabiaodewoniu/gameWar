@@ -1,7 +1,6 @@
 package code;
 
 import Util.GameValue;
-import View.Mypanel;
 
 import java.awt.event.KeyEvent;
 
@@ -10,9 +9,6 @@ public class Shot implements  Runnable{
         return x;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
 
     int x = 0;
 
@@ -20,9 +16,6 @@ public class Shot implements  Runnable{
         return y;
     }
 
-    public void setY(int y) {
-        this.y = y;
-    }
 
     int y = 0;
     int direction = 0;
@@ -55,6 +48,10 @@ public class Shot implements  Runnable{
         return isLive;
     }
 
+    public void setLive(boolean live) {
+        isLive = live;
+    }
+
     boolean isLive = true;
     @Override
     public void run() {
@@ -78,13 +75,14 @@ public class Shot implements  Runnable{
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                System.out.println(" 子弹坐标x:"+x +" y:"+ y);
+//                System.out.println(" 子弹坐标x:"+x +" y:"+ y);
                 if(isOver()){//判断是否结束
                     isLive = false;
-                    System.out.println(" 子弹结束！");
+                    System.out.println("子弹结束！");
                     return;
                 }
             }
+        System.out.println("子弹结束！");
     }
 
     //判断子弹是否结束

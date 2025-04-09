@@ -33,6 +33,28 @@ public class Tanke {
         this.direction = direction;
     }
 
+    /**
+     *  获取坦克本身大小 x,y最大值
+     * @return 返回坦克本身
+     */
+    public Tanke getXYSize(){
+        Tanke tanke = new Tanke(getX0(),getY0());
+        switch (getDirection()){
+            case KeyEvent.VK_W:
+            case KeyEvent.VK_S:
+                tanke.setX0(getX0() + GameValue.TANKE_weight);
+                tanke.setY0(getY0() + GameValue.TANKE_height);
+                break;
+            case KeyEvent.VK_D:
+            case KeyEvent.VK_A:
+                tanke.setX0(getX0() + GameValue.TANKE_height);
+                tanke.setY0(getY0() + GameValue.TANKE_weight);
+                break;
+
+        }
+        return tanke;
+    }
+
     //判断坦克是否出边界
     public boolean isPass(int speed){
         boolean flag = true; // 默认出边界
@@ -70,5 +92,15 @@ public class Tanke {
     public int direction = KeyEvent.VK_W;
     public int y0= 0;
     public int x0= 0;
-    public int speed= 1;
+    public int speed = GameValue.hero_speed;;
+
+    public boolean isLive() {
+        return isLive;
+    }
+
+    public void setLive(boolean live) {
+        isLive = live;
+    }
+
+    private boolean isLive = true;
 }

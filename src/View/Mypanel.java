@@ -1,8 +1,7 @@
 package View;
 
 import Util.GameValue;
-import code.Hero;
-import code.Shot;
+import code.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,9 +12,16 @@ import java.util.Vector;
 public class Mypanel extends JPanel  implements KeyListener, Runnable {
 
     private Hero hero = null;
+    private Vector<EnemyTanke> enemys = new Vector<>();
     public Mypanel(){
-        hero = new Hero(100,100);
-        setSize(GameValue.Panel_weight, GameValue.Panel_height);
+        hero = new Hero(100,200);
+
+        for(int i= 0; i < 3; i++){
+            EnemyTanke enemy = new EnemyTanke(100 * (i+1), 100);
+            enemy.setDirection(KeyEvent.VK_S);
+            enemy.shotBullts();// 创建一颗子弹
+            enemys.add(enemy);
+        }
         setBackground(Color.black);
         setVisible(true);
     }
@@ -23,21 +29,33 @@ public class Mypanel extends JPanel  implements KeyListener, Runnable {
     public void paint(Graphics g){
         super.paint(g);
         //画坦克
-        tangPaint(g,hero, hero.direction,true);
+        tangPaint(g, hero,true);
 
         //画子弹
-        drawBall(g, hero.shots, true);
+        drawBullet(g, hero.shots);
+
+        //画敌方坦克和子弹
+        for(int i = 0;i < enemys.size(); i++){
+            EnemyTanke enemy= enemys.get(i);
+            if(enemy.isLive()){
+                tangPaint(g, enemy, false);
+                //画子弹
+                drawBullet(g, enemy.bullts);
+            }else{
+                enemys.remove(enemy);// 如果死亡则移除
+            }
+        }
     }
 
     /***
      * 绘画坦克
      */
-    public void tangPaint(Graphics g, Hero hero, int direction, boolean flag){
+    public void tangPaint(Graphics g, Tanke hero, boolean flag){
         Color tanke = Color.cyan;
         if(flag){
             tanke = Color.yellow;
         }
-        switch (direction){
+        switch (hero.getDirection()){
             case KeyEvent.VK_W://向上
                 g.setColor(tanke);
                 g.fillRect(hero.getX0(), hero.getY0(),  GameValue.hero_weight, GameValue.hero_height); //第一调履带
@@ -87,17 +105,18 @@ public class Mypanel extends JPanel  implements KeyListener, Runnable {
      *
      * @param g 画笔
      * @param bullets 获取子弹s位置
-     * @param flag 敌 true 还是我
      */
-    public void drawBall(Graphics g, Vector<Shot> bullets, boolean flag){
+    public void drawBullet(Graphics g, Vector<Shot> bullets){
 
 
         g.setColor(GameValue.HERO_BALL_COLOR);
        for(int i = 0; i < bullets.size(); i++){
 
            Shot shot = bullets.get(i);
-           if( !shot.isLive()) bullets.remove(shot);
-           g.fillOval(shot.getX(), shot.getY(), GameValue.HERO_BALL_XY, GameValue.HERO_BALL_XY);
+           if(shot.isLive()) {
+               g.fillOval(shot.getX(), shot.getY(), GameValue.HERO_BALL_XY, GameValue.HERO_BALL_XY);
+           }else  bullets.remove(shot);//移除死亡子弹
+
        }
     }
 
@@ -145,10 +164,30 @@ public class Mypanel extends JPanel  implements KeyListener, Runnable {
 
     }
 
+    //判断坦克是否被击中
+    public  void isHit(Hero hero, Vector<EnemyTanke> enemys){
+        for(int i = 0; i < hero.shots.size(); i++){
+            Shot shot = hero.shots.get(i);
+            if(!shot.isLive()) continue;
+            for(int j= 0 ; j < enemys.size(); j++){
+                EnemyTanke enemy = enemys.get(j);
+                if(!enemy.isLive()) continue;
+                Tanke size = enemy.getXYSize();
+                if((shot.getX() > enemy.getX0() && shot.getX() < size.getX0())
+                 && (shot.getY() > enemy.getY0() && shot.getY() < size.getY0())){
+                    enemy.setLive(false);//
+                    shot.setLive(false);//子弹被消耗
+                    System.out.println("坦克被击中");
+                }
+            }
+        }
+    }
+
     @Override
     public void run() {
         while(true){
             try{
+                isHit(hero, enemys);
                 this.repaint();
                 Thread.sleep(200);
             }catch(Exception e){
