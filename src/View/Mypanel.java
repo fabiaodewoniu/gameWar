@@ -131,24 +131,16 @@ public class Mypanel extends JPanel  implements KeyListener, Runnable {
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()){
             case KeyEvent.VK_W:
-                if(hero.isPass(hero.speed)) return;
-                hero.setY0(hero.getY0() - hero.speed);
-                hero.direction = KeyEvent.VK_W;
+                hero.moveUp();
                 break;
             case KeyEvent.VK_S:
-                hero.direction = KeyEvent.VK_S;
-                if(hero.isPass(hero.speed)) return;
-                hero.setY0(hero.getY0() + hero.speed);
+                hero.moveDown();
                 break;
             case KeyEvent.VK_D:
-                hero.direction = KeyEvent.VK_D;
-                if(hero.isPass(hero.speed)) return;
-                hero.setX0(hero.getX0() + hero.speed);
+                hero.moveRight();
                 break;
             case KeyEvent.VK_A:
-                hero.direction = KeyEvent.VK_A;
-                if(hero.isPass(hero.speed)) return;
-                hero.setX0(hero.getX0() - hero.speed);
+                hero.moveLeft();
                 break;
             case KeyEvent.VK_Q:
                 System.out.println("按下开炮");

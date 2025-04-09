@@ -5,7 +5,11 @@ import Util.GameValue;
 import java.awt.event.KeyEvent;
 
 public class Tanke {
-
+    //方向
+    public int direction = KeyEvent.VK_W;
+    public int y0= 0;
+    public int x0= 0;
+    public int speed = GameValue.hero_speed;
     public int getX0() {
         return x0;
     }
@@ -56,28 +60,28 @@ public class Tanke {
     }
 
     //判断坦克是否出边界
-    public boolean isPass(int speed){
+    public boolean isPass(int direction){
         boolean flag = true; // 默认出边界
         int newX = getX0(),nexY = getY0();
         int newX0 = getX0(),nexY0 = getY0();
-        switch (getDirection()){
+        switch (direction){
             case KeyEvent.VK_W:
-                nexY -=  speed;
+                nexY -=  this.speed;
                 nexY0 = nexY+ GameValue.TANKE_height;
                 newX0 += GameValue.TANKE_weight;
                 break;
             case KeyEvent.VK_S:
-                nexY += speed;
+                nexY += this.speed;
                 newX0 += GameValue.TANKE_weight;
-                nexY0 = nexY+  GameValue.TANKE_height;
+                nexY0 = nexY +  GameValue.TANKE_height;
                 break;
             case KeyEvent.VK_D:
-                newX += speed;
+                newX += this.speed;
                 newX0 = newX +  GameValue.TANKE_height;
                 nexY0 += GameValue.TANKE_weight;
                 break;
             case KeyEvent.VK_A:
-                newX -= speed;
+                newX -= this.speed;
                 newX0 = newX +  GameValue.TANKE_height;
                 nexY0 += GameValue.TANKE_weight;
                 break;
@@ -88,11 +92,31 @@ public class Tanke {
         return flag;
     }
 
-    //方向
-    public int direction = KeyEvent.VK_W;
-    public int y0= 0;
-    public int x0= 0;
-    public int speed = GameValue.hero_speed;;
+
+
+    /**
+     * 向上移动
+     */
+    public void moveUp(){
+        if(this.isPass(KeyEvent.VK_W)) return;
+        this.y0 -= this.speed;
+        this.direction = KeyEvent.VK_W;
+    }
+    public void moveDown(){
+        if(this.isPass(KeyEvent.VK_S)) return;
+        this.y0 += this.speed;
+        this.direction = KeyEvent.VK_S;
+    }
+    public void moveLeft(){
+        if(this.isPass(KeyEvent.VK_A)) return;
+        this.x0 -= this.speed;
+        this.direction = KeyEvent.VK_A;
+    }
+    public void moveRight(){
+        if(this.isPass(KeyEvent.VK_D)) return;
+        this.x0 += this.speed;
+        this.direction = KeyEvent.VK_D;
+    }
 
     public boolean isLive() {
         return isLive;
